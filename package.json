@@ -1,7 +1,7 @@
 {
-  "name": "ng-material-theme",
+  "name": "@wizsolucoes/ng-material-theme",
   "version": "0.0.1-0",
-  "description": "A blank schematics",
+  "description": "Schematics para instalação do Angular Material com tema Wiz",
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "build:watch": "tsc -p tsconfig.json --watch",
