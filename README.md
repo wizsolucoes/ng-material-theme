@@ -1,28 +1,49 @@
-# Getting Started With Schematics
+# Wiz Angular Material Schematic
 
-This repository is a basic Schematic implementation that serves as a starting point to create and publish Schematics to NPM.
+Adicione o Angular Material com a folha de estilos da Wiz ao seu projeto.
 
-### Testing
+## Uso
 
-To test locally, install `@angular-devkit/schematics-cli` globally and use the `schematics` command line tool. That tool acts the same as the `generate` command of the Angular CLI, but also has a debug mode.
-
-Check the documentation with
 ```bash
-schematics --help
+ng add @wizsolucoes/ng-material-theme
 ```
 
-### Unit Testing
+## Sobre
+Este schematic instala os pacotes npm [@angukar/material](https://www.npmjs.com/package/@angular/material),
+cria os arquivos da folha de estilo da Wiz e atualiza o 'styles.scss' para importar
+as folhas de estilo, customizando o Angular Material.
 
-`npm run test` will run the unit tests, using Jasmine as a runner and test framework.
-
-### Publishing
-
-To publish, simply do:
-
+## Desenvolvimento, por onde começar
 ```bash
+# Instalar as dependências
+npm install
+
+# Buildar schematic
 npm run build
-npm publish
+
+# Executar os testes
+npm test
 ```
 
-That's it!
- 
+### Testando o schematic localmente
+#### 1. Gere um distribuível do schematic
+
+```bash
+# Instalar as dependências
+npm install
+
+# Buildar schematic
+npm run build
+
+# Gerar tarball eg. wizsolucoes-ng-material-theme-0.0.1-0.tgz
+npm pack
+```
+
+#### 2. Instale e execute o schematic na raiz de qualquer aplicação
+
+```bash
+# Instalar schematic
+npm i --no-save ../path/to/ng-material-theme/wizsolucoes-ng-material-theme-0.0.1-0.tgz
+
+# Executar schematic
+ng g @wizsolucoes/ng-material-theme:ng-add
