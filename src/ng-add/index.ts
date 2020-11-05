@@ -6,7 +6,7 @@ import {
   schematic
 } from '@angular-devkit/schematics';
 
-export default function main(options: any): Rule {
+export function ngAdd(options: any): Rule {
   return (tree: Tree, _context: SchematicContext) => {
     return chain([
       schematic('ng-material-theme', options),

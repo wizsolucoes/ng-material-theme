@@ -1,13 +1,13 @@
 {
   "$schema": "../node_modules/@angular-devkit/schematics/collection-schema.json",
   "schematics": {
-    "ng-add": {
-      "description": "Adicionar funcionalidade 'ng add @wizsolucoes/ng-material-theme ao schematics",
-      "factory": "./ng-add/index#main"
-    },
     "ng-material-theme": {
       "description": "Instalar Angular Material com tema Wiz",
       "factory": "./ng-material-theme/index#ngMaterialTheme"
+    },
+    "ng-add": {
+      "description": "Adicionar funcionalidade 'ng add @wizsolucoes/ng-material-theme' ao schematics",
+      "factory": "./ng-add/index#ngAdd"
     }
   }
 }
