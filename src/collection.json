@@ -1,0 +1,9 @@
+{
+  "$schema": "../node_modules/@angular-devkit/schematics/collection-schema.json",
+  "schematics": {
+    "ng-material-theme": {
+      "description": "A blank schematic.",
+      "factory": "./ng-material-theme/index#ngMaterialTheme"
+    }
+  }
+}
