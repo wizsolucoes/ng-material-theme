@@ -9,7 +9,7 @@ ng add @wizsolucoes/ng-material-theme
 ```
 
 ## Sobre
-Este schematic instala os pacotes npm [@angukar/material](https://www.npmjs.com/package/@angular/material),
+Este schematic instala os pacotes npm [@angular/material](https://www.npmjs.com/package/@angular/material),
 cria os arquivos da folha de estilo da Wiz e atualiza o 'styles.scss' para importar
 as folhas de estilo, customizando o Angular Material.
 
