@@ -52,7 +52,14 @@ function addAngularMaterial(): Rule {
       version: '^10.2.7',
     }
 
+    const angularCDK: NodeDependency = {
+      name: '@angular/cdk',
+      type: NodeDependencyType.Default,
+      version: '^10.2.7',
+    }
+
     addPackageJsonDependency(tree, angularMaterial);
+    addPackageJsonDependency(tree, angularCDK);
 
     _context.addTask(new NodePackageInstallTask());
   }

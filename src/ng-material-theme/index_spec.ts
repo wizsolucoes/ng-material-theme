@@ -29,7 +29,7 @@ describe("ng-material-theme", () => {
       .toPromise();
   });
 
-  it('should add the @angular/material schematic and copy the custom theme files', async () => {
+  it('should add the @angular/material and @angular/cdk schematic', async () => {
     const tree = await runner.runSchematicAsync(
       'ng-material-theme',
       {},
@@ -39,6 +39,7 @@ describe("ng-material-theme", () => {
     const packageFile = JSON.parse(tree.read('package.json')!.toString('utf-8'));
 
     expect(packageFile.dependencies['@angular/material']).toBeTruthy();
+    expect(packageFile.dependencies['@angular/cdk']).toBeTruthy();
   });
 
   it('should copy the custom theme files to the project root', async () => {
@@ -60,7 +61,7 @@ describe("ng-material-theme", () => {
     ).toPromise();
 
     const styles = tree.read('/src/styles.scss')!.toString('utf-8');
-
+    
     expect(styles).toContain("@import '~@angular/material/theming';");
     expect(styles).toContain("@import './custom-component-themes.scss';");
     expect(styles).toContain("@import './theme.scss';");
