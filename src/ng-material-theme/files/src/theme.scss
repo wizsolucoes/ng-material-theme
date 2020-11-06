@@ -1,4 +1,7 @@
 // theme.scss
+// Fonts
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500;700&display=swap');
 
 // mat-typography-level(size, line-height, font-weight)
 $wiz-typography: mat-typography-config(
