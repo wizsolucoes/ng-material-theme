@@ -11,13 +11,13 @@ import {
   mergeWith,
   MergeStrategy,
 } from '@angular-devkit/schematics';
-import { createDefaultPath } from '@schematics/angular/utility/workspace';
 import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
 import {
   NodeDependency,
   NodeDependencyType,
   addPackageJsonDependency
 } from '@schematics/angular/utility/dependencies';
+import { buildDefaultPath } from "@schematics/angular/utility/project";
 
 // You don't have to export the function as default. You can also have more than one rule factory
 // per file.
@@ -38,7 +38,7 @@ function checkValidProject() {
     const angularFile = tree.read('angular.json');
 
     if (!packageFile || !angularFile)
-      throw new SchematicsException('Not a valid workspace');
+      throw new SchematicsException();
 
     return tree;
   }
@@ -67,12 +67,7 @@ function addAngularMaterial(): Rule {
 
 function generateProjectFiles(): Rule {
   return async (tree: Tree, _context: SchematicContext) => {
-    const workspaceConfigBuffer = tree.read('angular.json');
-
-    const workspaceConfig = JSON.parse(workspaceConfigBuffer!.toString());
-    const projectName: string = workspaceConfig.defaultProject;
-
-    const defaultProjectPath = await createDefaultPath(tree, projectName);
+    const defaultProjectPath = _getDefaultProjectPath(tree);
     const projectPath = defaultProjectPath.replace('src/app', '');
 
     const sourceTemplates = url('./files');
@@ -88,7 +83,9 @@ function generateProjectFiles(): Rule {
 
 function updateStylesFile() {
   return (tree: Tree, _context: SchematicContext) => {
-    const filePath = './src/styles.scss';
+    const defaultProjectPath = _getDefaultProjectPath(tree);
+
+    const filePath = defaultProjectPath.replace('/app', '/styles.scss');
     const styles = tree.read(filePath)!.toString();
 
     const updatedStyles = styles.concat(`
@@ -115,4 +112,16 @@ function _overwriteIfExists(host: Tree): Rule {
     }
     return fileEntry;
   });
+}
+
+function _getDefaultProjectPath(tree: Tree) {
+  const workspaceConfigBuffer = tree.read('angular.json');
+
+  const workspaceConfig = JSON.parse(workspaceConfigBuffer!.toString());
+  const projectName: string = workspaceConfig.defaultProject;
+  const project = workspaceConfig.projects[projectName];
+
+  const defaultProjectPath = buildDefaultPath(project);
+
+  return defaultProjectPath;
 }
