@@ -23,7 +23,7 @@ describe("ng-material-theme", () => {
       .runExternalSchematicAsync(
         "@schematics/angular",
         "application",
-        { name: "my-app", style: 'scss', projectRoot: './' },
+        { name: "my-app", style: 'scss' },
         appTree
       )
       .toPromise();
@@ -49,8 +49,8 @@ describe("ng-material-theme", () => {
       appTree
     ).toPromise();
 
-    expect(tree.files).toContain('/src/theme.scss');
-    expect(tree.files).toContain('/src/custom-component-themes.scss');
+    expect(tree.files).toContain('/my-app/src/theme.scss');
+    expect(tree.files).toContain('/my-app/src/custom-component-themes.scss');
   });
 
   it("should update the \'styles.scss\' file on \'src\' folder", async () => {
@@ -60,7 +60,7 @@ describe("ng-material-theme", () => {
       appTree
     ).toPromise();
 
-    const styles = tree.read('/src/styles.scss')!.toString('utf-8');
+    const styles = tree.read('/my-app/src/styles.scss')!.toString('utf-8');
     
     expect(styles).toContain("@import '~@angular/material/theming';");
     expect(styles).toContain("@import './custom-component-themes.scss';");
