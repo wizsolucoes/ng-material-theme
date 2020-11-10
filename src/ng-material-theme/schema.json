@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/schema",
+  "id": "NgMaterialTeheme",
+  "title": "NG Material Theme",
+  "type": "object",
+  "description": "Installs the Angular Material Wiz custom theme.",
+  "properties": {
+    "white-label": {
+      "type": "boolean",
+      "description": "Generate in specific Anuglar CLI workspace project",
+      "x-prompt": "Is this application a 'White Label'?",
+      "default": false
+    }
+  }
+}

@@ -18,16 +18,17 @@ import {
   addPackageJsonDependency
 } from '@schematics/angular/utility/dependencies';
 import { buildDefaultPath } from "@schematics/angular/utility/project";
+import { Schema } from './schema';
 
 // You don't have to export the function as default. You can also have more than one rule factory
 // per file.
-export function ngMaterialTheme(_options: any): Rule {
+export function ngMaterialTheme(_options: Schema): Rule {
   return (tree: Tree, _context: SchematicContext) => {
     return chain([
       checkValidProject(),
-      addAngularMaterial(),
-      generateProjectFiles(),
-      updateStylesFile(),
+      addAngularMaterial(_options),
+      generateProjectFiles(_options),
+      updateStylesFile(_options),
     ])(tree, _context);
   };
 }
@@ -44,7 +45,7 @@ function checkValidProject() {
   }
 }
 
-function addAngularMaterial(): Rule {
+function addAngularMaterial(_options: Schema): Rule {
   return (tree: Tree, _context: SchematicContext) => {
     const angularMaterial: NodeDependency = {
       name: '@angular/material',
@@ -65,12 +66,14 @@ function addAngularMaterial(): Rule {
   }
 }
 
-function generateProjectFiles(): Rule {
+function generateProjectFiles(_options: Schema): Rule {
   return async (tree: Tree, _context: SchematicContext) => {
     const defaultProjectPath = _getDefaultProjectPath(tree);
     const projectPath = defaultProjectPath.replace('src/app', '');
 
-    const sourceTemplates = url('./files');
+    const appendPath = _options['white-label'] ? '-white-label' : '';
+
+    const sourceTemplates = url(`./files${appendPath}`);
 
     const sourceParametrizedTemplates = apply(sourceTemplates, [
       move(projectPath),
@@ -81,14 +84,40 @@ function generateProjectFiles(): Rule {
   }
 }
 
-function updateStylesFile() {
+function updateStylesFile(_options: Schema) {
   return (tree: Tree, _context: SchematicContext) => {
     const defaultProjectPath = _getDefaultProjectPath(tree);
 
     const filePath = defaultProjectPath.replace('/app', '/styles.scss');
     const styles = tree.read(filePath)!.toString();
 
-    const updatedStyles = styles.concat(`
+    const updatedStyles = _options['white-label'] ? styles.concat(
+      `:root {
+  --primary-color: #FF9100;
+  --accent-color: #006eb4;
+  --syz-primary-color: var(--primary-color);
+  --syz-accent-color: var(--accent-color);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  outline: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Roboto', 'Heebo', sans-serif;
+}
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@import '~@angular/material/theming';
+
+// Plus imports for other components in your app.
+@import './custom-component-themes.scss';
+@import './theme.scss';`
+    ) : styles.concat(`
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
 @import '~@angular/material/theming';
