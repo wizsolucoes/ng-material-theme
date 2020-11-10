@@ -19,3 +19,5 @@ yarn-error.log*
 
 # Tarball
 *.tgz
+
+!src/**/schema.d.ts
