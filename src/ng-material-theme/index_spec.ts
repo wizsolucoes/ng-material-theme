@@ -4,9 +4,11 @@ import {
   SchematicTestRunner,
 } from '@angular-devkit/schematics/testing';
 import * as path from 'path';
+import * as fs from 'fs';
 
 const collectionPath = path.join(__dirname, "../collection.json");
 const runner = new SchematicTestRunner("schematics", collectionPath);
+const whiteLabel = [true, false];
 
 let appTree: UnitTestTree;
 
@@ -32,7 +34,7 @@ describe("ng-material-theme", () => {
   it('should add the @angular/material and @angular/cdk schematic', async () => {
     const tree = await runner.runSchematicAsync(
       'ng-material-theme',
-      {},
+      { 'white-label': whiteLabel[Math.round(Math.random())] },
       appTree
     ).toPromise();
 
@@ -42,38 +44,87 @@ describe("ng-material-theme", () => {
     expect(packageFile.dependencies['@angular/cdk']).toBeTruthy();
   });
 
-  it('should copy the custom theme files to the project root', async () => {
-    const tree = await runner.runSchematicAsync(
-      'ng-material-theme',
-      {},
-      appTree
-    ).toPromise();
-
-    expect(tree.files).toContain('/my-app/src/theme.scss');
-    expect(tree.files).toContain('/my-app/src/custom-component-themes.scss');
-  });
-
-  it("should update the \'styles.scss\' file on \'src\' folder", async () => {
-    const tree = await runner.runSchematicAsync(
-      'ng-material-theme',
-      {},
-      appTree
-    ).toPromise();
-
-    const styles = tree.read('/my-app/src/styles.scss')!.toString('utf-8');
-    
-    expect(styles).toContain("@import '~@angular/material/theming';");
-    expect(styles).toContain("@import './custom-component-themes.scss';");
-    expect(styles).toContain("@import './theme.scss';");
-  });
-
   it('should fail if missing tree', async () => {
     await expectAsync(
       runner.runSchematicAsync(
         'ng-material-theme',
-        { name: 'invalid-workspace' },
+        { 'white-label': whiteLabel[Math.round(Math.random())] },
         Tree.empty(),
       ).toPromise()
     ).toBeRejected();
+  });
+
+  describe('Normal application', () => {
+    it('should copy the custom theme files to the project root', async () => {
+      const tree = await runner.runSchematicAsync(
+        'ng-material-theme',
+        { 'white-label': false },
+        appTree
+      ).toPromise();
+  
+      const createdThemeFile = tree.read('/my-app/src/theme.scss')!.toString();
+      const baseThemeFile = fs.readFileSync(
+        path.resolve(__dirname, 'files', 'src', 'theme.scss'),
+        { encoding: 'utf-8' },
+      );
+  
+      expect(tree.files).toContain('/my-app/src/theme.scss');
+      expect(createdThemeFile).toEqual(baseThemeFile);
+      expect(tree.files).toContain('/my-app/src/custom-component-themes.scss');
+    });
+
+    it("should update the \'styles.scss\' file on \'src\' folder", async () => {
+      const tree = await runner.runSchematicAsync(
+        'ng-material-theme',
+        { 'white-label': false },
+        appTree
+      ).toPromise();
+  
+      const styles = tree.read('/my-app/src/styles.scss')!.toString('utf-8');
+      
+      expect(styles).toContain("@import '~@angular/material/theming';");
+      expect(styles).toContain("@import './custom-component-themes.scss';");
+      expect(styles).toContain("@import './theme.scss';");
+    });
+  });
+
+  describe('White Label application', () => {
+    it('should copy the custom theme files to the project root', async () => {
+      const tree = await runner.runSchematicAsync(
+        'ng-material-theme',
+        { 'white-label': true },
+        appTree
+      ).toPromise();
+  
+      const createdThemeFile = tree.read('/my-app/src/theme.scss')!.toString();
+      const baseThemeFile = fs.readFileSync(
+        path.resolve(__dirname, 'files-white-label', 'src', 'theme.scss'),
+        { encoding: 'utf-8' },
+      );
+  
+      expect(tree.files).toContain('/my-app/src/theme.scss');
+      expect(createdThemeFile).toEqual(baseThemeFile);
+      expect(tree.files).toContain('/my-app/src/custom-component-themes.scss');
+    });
+
+    it("should update the \'styles.scss\' file on \'src\' folder", async () => {
+      const tree = await runner.runSchematicAsync(
+        'ng-material-theme',
+        { 'white-label': true },
+        appTree
+      ).toPromise();
+  
+      const styles = tree.read('/my-app/src/styles.scss')!.toString('utf-8');
+      
+      expect(styles).toContain("@import '~@angular/material/theming';");
+      expect(styles).toContain("@import './custom-component-themes.scss';");
+      expect(styles).toContain("@import './theme.scss';");
+      expect(styles).toContain(`:root {
+  --primary-color: #FF9100;
+  --accent-color: #006eb4;
+  --syz-primary-color: var(--primary-color);
+  --syz-accent-color: var(--accent-color);
+}`);
+    });
   });
 });
