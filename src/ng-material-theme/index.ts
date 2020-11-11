@@ -91,41 +91,14 @@ function updateStylesFile(_options: Schema) {
     const filePath = defaultProjectPath.replace('/app', '/styles.scss');
     const styles = tree.read(filePath)!.toString();
 
-    const updatedStyles = _options['white-label'] ? styles.concat(
-      `:root {
-  --primary-color: #FF9100;
-  --accent-color: #006eb4;
-  --syz-primary-color: var(--primary-color);
-  --syz-accent-color: var(--accent-color);
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  outline: 0;
-  box-sizing: border-box;
-}
-
-body {
-  font-family: 'Roboto', 'Heebo', sans-serif;
-}
-
+    const updatedStyles = styles.concat(`
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
 @import '~@angular/material/theming';
 
 // Plus imports for other components in your app.
 @import './custom-component-themes.scss';
-@import './theme.scss';`
-    ) : styles.concat(`
-// Custom Theming for Angular Material
-// For more information: https://material.angular.io/guide/theming
-@import '~@angular/material/theming';
-
-// Plus imports for other components in your app.
-@import './custom-component-themes.scss';
-@import './theme.scss';\n`
-    );
+@import './theme.scss';\n`);
 
     tree.overwrite(filePath, updatedStyles);
 

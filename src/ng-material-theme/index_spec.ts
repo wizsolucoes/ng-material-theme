@@ -44,6 +44,20 @@ describe("ng-material-theme", () => {
     expect(packageFile.dependencies['@angular/cdk']).toBeTruthy();
   });
 
+  it("should update the \'styles.scss\' file on \'src\' folder", async () => {
+    const tree = await runner.runSchematicAsync(
+      'ng-material-theme',
+      { 'white-label': false },
+      appTree
+    ).toPromise();
+
+    const styles = tree.read('/my-app/src/styles.scss')!.toString('utf-8');
+    
+    expect(styles).toContain("@import '~@angular/material/theming';");
+    expect(styles).toContain("@import './custom-component-themes.scss';");
+    expect(styles).toContain("@import './theme.scss';");
+  });
+
   it('should fail if missing tree', async () => {
     await expectAsync(
       runner.runSchematicAsync(
@@ -72,20 +86,6 @@ describe("ng-material-theme", () => {
       expect(createdThemeFile).toEqual(baseThemeFile);
       expect(tree.files).toContain('/my-app/src/custom-component-themes.scss');
     });
-
-    it("should update the \'styles.scss\' file on \'src\' folder", async () => {
-      const tree = await runner.runSchematicAsync(
-        'ng-material-theme',
-        { 'white-label': false },
-        appTree
-      ).toPromise();
-  
-      const styles = tree.read('/my-app/src/styles.scss')!.toString('utf-8');
-      
-      expect(styles).toContain("@import '~@angular/material/theming';");
-      expect(styles).toContain("@import './custom-component-themes.scss';");
-      expect(styles).toContain("@import './theme.scss';");
-    });
   });
 
   describe('White Label application', () => {
@@ -105,26 +105,6 @@ describe("ng-material-theme", () => {
       expect(tree.files).toContain('/my-app/src/theme.scss');
       expect(createdThemeFile).toEqual(baseThemeFile);
       expect(tree.files).toContain('/my-app/src/custom-component-themes.scss');
-    });
-
-    it("should update the \'styles.scss\' file on \'src\' folder", async () => {
-      const tree = await runner.runSchematicAsync(
-        'ng-material-theme',
-        { 'white-label': true },
-        appTree
-      ).toPromise();
-  
-      const styles = tree.read('/my-app/src/styles.scss')!.toString('utf-8');
-      
-      expect(styles).toContain("@import '~@angular/material/theming';");
-      expect(styles).toContain("@import './custom-component-themes.scss';");
-      expect(styles).toContain("@import './theme.scss';");
-      expect(styles).toContain(`:root {
-  --primary-color: #FF9100;
-  --accent-color: #006eb4;
-  --syz-primary-color: var(--primary-color);
-  --syz-accent-color: var(--accent-color);
-}`);
     });
   });
 });
