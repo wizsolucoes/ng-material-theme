@@ -17,19 +17,32 @@ import {
   NodeDependencyType,
   addPackageJsonDependency
 } from '@schematics/angular/utility/dependencies';
-import { buildDefaultPath } from "@schematics/angular/utility/project";
+import { createDefaultPath } from "@schematics/angular/utility/workspace";
 import { Schema } from './schema';
+
+let defaultPath: string;
 
 // You don't have to export the function as default. You can also have more than one rule factory
 // per file.
 export function ngMaterialTheme(_options: Schema): Rule {
-  return (tree: Tree, _context: SchematicContext) => {
+  return async (tree: Tree, _context: SchematicContext) => {
+    const workspaceConfigBuffer = tree.read("angular.json");
+
+    if (!workspaceConfigBuffer) {
+      throw new SchematicsException("Not an Angular CLI workspace");
+    }
+
+    const workspaceConfig = JSON.parse(workspaceConfigBuffer.toString());
+    const projectName = workspaceConfig.defaultProject;
+
+    defaultPath = await createDefaultPath(tree, projectName);
+
     return chain([
       checkValidProject(),
       addAngularMaterial(_options),
       generateProjectFiles(_options),
       updateStylesFile(_options),
-    ])(tree, _context);
+    ]);
   };
 }
 
@@ -68,7 +81,7 @@ function addAngularMaterial(_options: Schema): Rule {
 
 function generateProjectFiles(_options: Schema): Rule {
   return async (tree: Tree, _context: SchematicContext) => {
-    const defaultProjectPath = _getDefaultProjectPath(tree);
+    const defaultProjectPath = defaultPath
     const projectPath = defaultProjectPath.replace('src/app', '');
 
     const appendPath = _options['white-label'] ? '-white-label' : '';
@@ -86,7 +99,7 @@ function generateProjectFiles(_options: Schema): Rule {
 
 function updateStylesFile(_options: Schema) {
   return (tree: Tree, _context: SchematicContext) => {
-    const defaultProjectPath = _getDefaultProjectPath(tree);
+    const defaultProjectPath = defaultPath
 
     const filePath = defaultProjectPath.replace('/app', '/styles.scss');
     const styles = tree.read(filePath)!.toString();
@@ -114,16 +127,4 @@ function _overwriteIfExists(host: Tree): Rule {
     }
     return fileEntry;
   });
-}
-
-function _getDefaultProjectPath(tree: Tree) {
-  const workspaceConfigBuffer = tree.read('angular.json');
-
-  const workspaceConfig = JSON.parse(workspaceConfigBuffer!.toString());
-  const projectName: string = workspaceConfig.defaultProject;
-  const project = workspaceConfig.projects[projectName];
-
-  const defaultProjectPath = buildDefaultPath(project);
-
-  return defaultProjectPath;
 }
