@@ -6,60 +6,15 @@
 trigger:
   batch: 'true'
 
-pool:
-  vmImage: "ubuntu-latest"
+resources:
+  repositories:
+    - repository: coretemplate
+      type: git
+      name: WizPipelines/core-template
 
-stages:
-  - stage: Build
-    condition: ne(variables['build.sourceBranch'], 'refs/heads/main')
-    jobs:
-      - job: Build
-        displayName: "Build and test"
-        condition: succeeded()
-        steps:
-          - task: Npm@1
-            displayName: "Install dependencies"
-            inputs:
-              command: "install"
-          - task: Npm@1
-            displayName: "Build"
-            inputs:
-              command: custom
-              verbose: true
-              customCommand: "run build"
-          - task: Npm@1
-            displayName: "Test"
-            inputs:
-              command: "custom"
-              verbose: true
-              customCommand: "test"
-  - stage: Publish
-    condition: eq(variables['build.sourceBranch'], 'refs/heads/main')
-    jobs:
-      - job: Publish
-        displayName: "Publish"
-        condition: succeeded()
-        steps:
-          - task: Npm@1
-            displayName: "Install dependencies"
-            inputs:
-              command: "install"
-          - task: Npm@1
-            displayName: "Build"
-            inputs:
-              command: custom
-              verbose: true
-              customCommand: "run build"
-          - task: Npm@1
-            displayName: "Test"
-            inputs:
-              command: "custom"
-              verbose: true
-              customCommand: "test"
-          - task: Npm@1
-            displayName: "Publish"
-            inputs:
-              command: "custom"
-              verbose: true
-              customCommand: "publish"
-              customEndpoint: "npmjs"
+extends:
+  template: main.yml@coretemplate
+  parameters:
+    technology: 'node-package'
+    npmCustomEndpoint: 'npmjs'
+    npmRunBuild: true
