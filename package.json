@@ -1,6 +1,6 @@
 {
   "name": "@wizsolucoes/ng-material-theme",
-  "version": "1.1.4",
+  "version": "1.1.5",
   "description": "Schematics para instalação do Angular Material com tema Wiz",
   "scripts": {
     "build": "tsc -p tsconfig.json",

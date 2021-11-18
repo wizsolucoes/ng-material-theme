@@ -3,8 +3,11 @@
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
 
+pool:
+  vmImage: "ubuntu-latest"
+
 trigger:
-  batch: 'true'
+  batch: "true"
 
 resources:
   repositories:
@@ -15,6 +18,6 @@ resources:
 extends:
   template: main.yml@coretemplate
   parameters:
-    technology: 'node-package'
-    npmCustomEndpoint: 'npmjs'
+    technology: "node-package"
+    npmCustomEndpoint: "npmjs"
     npmRunBuild: true

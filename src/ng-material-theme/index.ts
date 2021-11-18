@@ -63,13 +63,13 @@ function addAngularMaterial(_options: Schema): Rule {
     const angularMaterial: NodeDependency = {
       name: '@angular/material',
       type: NodeDependencyType.Default,
-      version: '^10.2.7',
+      version: '^12.2.13',
     }
 
     const angularCDK: NodeDependency = {
       name: '@angular/cdk',
       type: NodeDependencyType.Default,
-      version: '^10.2.7',
+      version: '^12.2.13',
     }
 
     addPackageJsonDependency(tree, angularMaterial);
