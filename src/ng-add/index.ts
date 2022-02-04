@@ -3,13 +3,11 @@ import {
   Rule,
   SchematicContext,
   Tree,
-  schematic
+  schematic,
 } from '@angular-devkit/schematics';
 
 export function ngAdd(options: any): Rule {
   return (tree: Tree, _context: SchematicContext) => {
-    return chain([
-      schematic('ng-material-theme', options),
-    ])(tree, _context);
-  }
+    return chain([schematic('ng-material-theme', options)])(tree, _context);
+  };
 }

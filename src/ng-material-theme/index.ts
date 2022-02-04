@@ -15,9 +15,9 @@ import { NodePackageInstallTask } from '@angular-devkit/schematics/tasks';
 import {
   NodeDependency,
   NodeDependencyType,
-  addPackageJsonDependency
+  addPackageJsonDependency,
 } from '@schematics/angular/utility/dependencies';
-import { createDefaultPath } from "@schematics/angular/utility/workspace";
+import { createDefaultPath } from '@schematics/angular/utility/workspace';
 import { Schema } from './schema';
 
 let defaultPath: string;
@@ -26,10 +26,10 @@ let defaultPath: string;
 // per file.
 export function ngMaterialTheme(_options: Schema): Rule {
   return async (tree: Tree, _context: SchematicContext) => {
-    const workspaceConfigBuffer = tree.read("angular.json");
+    const workspaceConfigBuffer = tree.read('angular.json');
 
     if (!workspaceConfigBuffer) {
-      throw new SchematicsException("Not an Angular CLI workspace");
+      throw new SchematicsException('Not an Angular CLI workspace');
     }
 
     const workspaceConfig = JSON.parse(workspaceConfigBuffer.toString());
@@ -51,11 +51,10 @@ function checkValidProject() {
     const packageFile = tree.read('package.json');
     const angularFile = tree.read('angular.json');
 
-    if (!packageFile || !angularFile)
-      throw new SchematicsException();
+    if (!packageFile || !angularFile) throw new SchematicsException();
 
     return tree;
-  }
+  };
 }
 
 function addAngularMaterial(_options: Schema): Rule {
@@ -63,25 +62,25 @@ function addAngularMaterial(_options: Schema): Rule {
     const angularMaterial: NodeDependency = {
       name: '@angular/material',
       type: NodeDependencyType.Default,
-      version: '^12.2.13',
-    }
+      version: '^13.2.1',
+    };
 
     const angularCDK: NodeDependency = {
       name: '@angular/cdk',
       type: NodeDependencyType.Default,
-      version: '^12.2.13',
-    }
+      version: '^13.2.1',
+    };
 
     addPackageJsonDependency(tree, angularMaterial);
     addPackageJsonDependency(tree, angularCDK);
 
     _context.addTask(new NodePackageInstallTask());
-  }
+  };
 }
 
 function generateProjectFiles(_options: Schema): Rule {
   return async (tree: Tree, _context: SchematicContext) => {
-    const defaultProjectPath = defaultPath
+    const defaultProjectPath = defaultPath;
     const projectPath = defaultProjectPath.replace('src/app', '');
 
     const appendPath = _options['white-label'] ? '-white-label' : '';
@@ -94,12 +93,12 @@ function generateProjectFiles(_options: Schema): Rule {
     ]);
 
     return mergeWith(sourceParametrizedTemplates, MergeStrategy.Overwrite);
-  }
+  };
 }
 
 function updateStylesFile(_options: Schema) {
   return (tree: Tree, _context: SchematicContext) => {
-    const defaultProjectPath = defaultPath
+    const defaultProjectPath = defaultPath;
 
     const filePath = defaultProjectPath.replace('/app', '/styles.scss');
     const styles = tree.read(filePath)!.toString();
@@ -107,7 +106,7 @@ function updateStylesFile(_options: Schema) {
     const updatedStyles = styles.concat(`
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
-@import '~@angular/material/theming';
+@import '@angular/material/theming';
 
 // Plus imports for other components in your app.
 @import './custom-component-themes.scss';
@@ -116,7 +115,7 @@ function updateStylesFile(_options: Schema) {
     tree.overwrite(filePath, updatedStyles);
 
     return tree;
-  }
+  };
 }
 
 function _overwriteIfExists(host: Tree): Rule {
