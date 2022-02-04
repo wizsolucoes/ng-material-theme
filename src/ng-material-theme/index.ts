@@ -62,13 +62,13 @@ function addAngularMaterial(_options: Schema): Rule {
     const angularMaterial: NodeDependency = {
       name: '@angular/material',
       type: NodeDependencyType.Default,
-      version: '^12.2.13',
+      version: '^13.2.1',
     };
 
     const angularCDK: NodeDependency = {
       name: '@angular/cdk',
       type: NodeDependencyType.Default,
-      version: '^12.2.13',
+      version: '^13.2.1',
     };
 
     addPackageJsonDependency(tree, angularMaterial);
@@ -106,7 +106,7 @@ function updateStylesFile(_options: Schema) {
     const updatedStyles = styles.concat(`
 // Custom Theming for Angular Material
 // For more information: https://material.angular.io/guide/theming
-@import '~@angular/material/theming';
+@import '@angular/material/theming';
 
 // Plus imports for other components in your app.
 @import './custom-component-themes.scss';
